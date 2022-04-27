@@ -30,3 +30,52 @@ From school as sc
 Left join student as st ON st.student_id=sc.student_id
 Where st.city = sc.city and st.city <>'New York';
 
+SQL Exercise 2 – Write a Statement
+Write an SQL statement that lists student names, subject names, subject lecturers, and the max amount of points for all subjects except Computer Science and any subjects with a max score between 100 and 200.
+
+Table: subject
+subject_id  subject_name          max_score    lecturer
+----------  ----------            ----------   -----------  
+ 11         Math                  130          Christena Solem 
+ 12         Computer Science      150          Jaime Pille 
+ 13         Biology               300          Carrol Denmark 
+ 14         Geography             220          Yuette Galang 
+ 15         Physics               110          Colton Rather 
+ 16         Chemistry             400          Nan Mongeau 
+
+Table: student
+student_id   student_name    city           subject_id
+-----------  ------------    ----------    -----------
+2001         Thurman Thorn   New York               11
+2002         Sharda Clemens  San Francisco          12
+2003         Buck Elkins     New York               13
+2004         Fabian Johns    Boston                 15
+2005         Brad Cameron    Stanford               11
+2006         Sofia Roles     Boston                 16
+2007         Rory Pietila    New Haven              12
+
+Query: 
+Select student_name,subject_name,lecturer,max_score
+From subject as sb
+Left join student as st ON st.student_id=sb.student_id
+Where subject<>'Computer Science' and max_score between 100 and 200;
+
+SQL Exercise 3 – Find the Error
+What is wrong with this SQL query?
+
+Code 1:
+SELECT Id, name, YEAR(BillingDate) AS Year
+FROM Records
+WHERE Year >= 2010
+
+Code 2:
+SELECT id, name
+FROM students
+WHERE grades =
+             (SELECT MAX(grades)
+              FROM students
+              GROUP BY subject_id;);
+              
+Answer: 
+Code 1: Used Where clause instead of Having clause. Forgated ';'.
+Code 2: There is no Subject_id at Select statement of Subquery. 
