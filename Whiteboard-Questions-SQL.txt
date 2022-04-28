@@ -60,5 +60,22 @@ From subject as sb
 Left join student as st ON st.subject_id=sb.subject_id
 Where subject<>'Computer Science' and max_score between 100 and 200;
 
+SQL Exercise 3 – Find the Error
+What is wrong with this SQL query?
 
+Code 1:
+SELECT Id, name, YEAR(BillingDate) AS Year
+FROM Records
+WHERE Year >= 2010
 
+Code 2:
+SELECT id, name
+FROM students
+WHERE grades =
+             (SELECT MAX(grades)
+              FROM students
+              GROUP BY subject_id;);
+
+Answer:
+Code 1: Used "Year" at Where clause instead of "YEAR(BillingDate)". And forgated ';'.
+Code 2: We don't need Group by at Subquery. If we add this to select, then there will be multiple rows. Since it is equal we can delete this row.
