@@ -1,0 +1,6 @@
+SQL Exercise 5 – Write a Query
+The EMPLOYEE table has the following attributes: NAME, DEPT_ID, and SALARY. Write a query that shows the highest salary in each department.
+
+Select DEPT_ID, Max(SALARY)
+From EMPLOYEE
+Group by 1;
