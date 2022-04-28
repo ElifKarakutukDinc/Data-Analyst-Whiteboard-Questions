@@ -1,0 +1,5 @@
+SQL Exercise 6 – Write a Date Query
+Write an SQL query that displays the current date.
+
+Answer:
+Select current_date;
