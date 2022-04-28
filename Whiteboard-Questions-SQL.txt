@@ -30,3 +30,116 @@ From school as sc
 Left join student as st ON st.student_id=sc.student_id
 Where st.city = sc.city and st.city <>'New York';
 
+SQL Exercise 2 – Write a Statement
+Write an SQL statement that lists student names, subject names, subject lecturers, and the max amount of points for all subjects except Computer Science and any subjects with a max score between 100 and 200.
+
+Table: subject
+subject_id  subject_name          max_score    lecturer
+----------  ----------            ----------   -----------  
+ 11         Math                  130          Christena Solem 
+ 12         Computer Science      150          Jaime Pille 
+ 13         Biology               300          Carrol Denmark 
+ 14         Geography             220          Yuette Galang 
+ 15         Physics               110          Colton Rather 
+ 16         Chemistry             400          Nan Mongeau 
+
+Table: student
+student_id   student_name    city           subject_id
+-----------  ------------    ----------    -----------
+2001         Thurman Thorn   New York               11
+2002         Sharda Clemens  San Francisco          12
+2003         Buck Elkins     New York               13
+2004         Fabian Johns    Boston                 15
+2005         Brad Cameron    Stanford               11
+2006         Sofia Roles     Boston                 16
+2007         Rory Pietila    New Haven              12
+
+Query: 
+Select student_name,subject_name,lecturer,max_score
+From subject as sb
+Left join student as st ON st.student_id=sb.student_id
+Where subject<>'Computer Science' and max_score between 100 and 200;
+
+SQL Exercise 3 – Find the Error
+What is wrong with this SQL query?
+
+Code 1:
+SELECT Id, name, YEAR(BillingDate) AS Year
+FROM Records
+WHERE Year >= 2010
+
+Code 2:
+SELECT id, name
+FROM students
+WHERE grades =
+             (SELECT MAX(grades)
+              FROM students
+              GROUP BY subject_id;);
+              
+Answer: 
+Code 1: Used Where clause instead of Having clause. Forgated ';'.
+Code 2: There is no Subject_id at Select statement of Subquery. 
+
+SQL Exercise 4 – Find the Result
+Given the following tables …
+
+Table: worker
+id    name
+---   -----------      
+1     Guillermo Sparks
+2     Gene	Roberts
+3     Ally Jones
+4     Bryant Summers
+5     Candice Green
+
+Table: departments
+id    name            manager_id
+---   -------------    --------- 
+1     Financial               3        
+2     Strategy                5        
+3     IT                      1        
+4     Marketing            NULL     
+… What will be the result of the query below?
+
+Code: 
+SELECT name
+FROM worker
+WHERE id NOT IN (SELECT manager_id FROM departments)
+
+Answer: 
+name        
+-------------
+ Gene Roberts
+ Bryant Summers
+ 
+SQL Exercise 5 – Write a Query
+The EMPLOYEE table has the following attributes: NAME, DEPT_ID, and SALARY. Write a query that shows the highest salary in each department.
+
+Select DEPT_ID, Max(SALARY)
+From EMPLOYEE
+Group by 1;
+
+SQL Exercise 6 – Write a Date Query
+Write an SQL query that displays the current date.
+
+Answer: 
+Select current_date;
+
+SQL Exercise 7 – Write a Query
+Write an SQL query that checks whether a date (1/04/12) passed to the query is in a given format (MM/YY/DD).
+
+Answer: 
+SELECT FORMAT ('1/04/12', 'MM/YY/DD') as date;
+
+SQL Exercise 8 – Find and Delete Duplicates
+Write an SQL query to find duplicate rows in two tables (EMPLOYEE and WORKERS), and then write a query to delete the duplicates.
+
+Answer: 
+Select emp.id
+from EMPLOYEE as emp
+inner join WORKERS as wr ON emp.id=wr.employee_id;
+
+Delete From EMPLOYEE 
+Where (Select emp.id
+from EMPLOYEE as emp
+inner join WORKERS as wr ON emp.id=wr.employee_id); 
