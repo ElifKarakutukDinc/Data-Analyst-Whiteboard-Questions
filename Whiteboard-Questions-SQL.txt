@@ -130,3 +130,4 @@ Write an SQL query that checks whether a date (1/04/12) passed to the query is i
 
 Answer: 
 SELECT FORMAT ('1/04/12', 'MM/YY/DD') as date;
+
