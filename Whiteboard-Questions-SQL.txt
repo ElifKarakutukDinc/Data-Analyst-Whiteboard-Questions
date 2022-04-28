@@ -1,0 +1,19 @@
+SQL Exercise 3 – Find the Error
+What is wrong with this SQL query?
+
+Code 1:
+SELECT Id, name, YEAR(BillingDate) AS Year
+FROM Records
+WHERE Year >= 2010
+
+Code 2:
+SELECT id, name
+FROM students
+WHERE grades =
+             (SELECT MAX(grades)
+              FROM students
+              GROUP BY subject_id;);
+
+Answer:
+Code 1: Used Where clause instead of Having clause. Forgated ';'.
+Code 2: There is no Subject_id at Select statement of Subquery.
