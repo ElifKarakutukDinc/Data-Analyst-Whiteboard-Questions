@@ -79,3 +79,35 @@ WHERE grades =
 Answer:
 Code 1: Used "Year" at Where clause instead of "YEAR(BillingDate)". And forgated ';'.
 Code 2: We don't need Group by at Subquery. If we add this to select, then there will be multiple rows. Since it is equal we can delete this row.
+
+SQL Exercise 4 – Find the Result
+Given the following tables …
+
+Table: worker
+id    name
+---   -----------
+1     Guillermo Sparks
+2     Gene      Roberts
+3     Ally Jones
+4     Bryant Summers
+5     Candice Green
+
+Table: departments
+id    name            manager_id
+---   -------------    ---------
+1     Financial               3
+2     Strategy                5
+3     IT                      1
+4     Marketing            NULL
+… What will be the result of the query below?
+
+Code:
+SELECT name
+FROM worker
+WHERE id NOT IN (SELECT manager_id FROM departments)
+
+Answer:
+name
+-------------
+ Gene Roberts
+ Bryant Summers
