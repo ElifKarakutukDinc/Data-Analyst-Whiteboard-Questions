@@ -2,9 +2,11 @@ SQL Exercise 8 – Find and Delete Duplicates
 Write an SQL query to find duplicate rows in two tables (EMPLOYEE and WORKERS), and then write a query to delete the duplicates.
 
 Answer:
-Select emp.id
+Select emp.id, count(emp.id) as id_count
 from EMPLOYEE as emp
-inner join WORKERS as wr ON emp.id=wr.employee_id;
+inner join WORKERS as wr ON emp.id=wr.employee_id
+group by 1
+having id_count >1;
 
 Delete From EMPLOYEE
 Where (Select emp.id
