@@ -111,3 +111,44 @@ name
 -------------
  Gene Roberts
  Bryant Summers
+
+
+SQL Exercise 10 – Write a Complex Query
+Write a query that displays the average age of workers in each company. The result should show the name of the company and the age of the company’s youngest worker.
+
+Table: company
+ID     NAME
+------ -------------
+    1  Amazon
+    2  Samsung
+    3  LG
+    4  Kia
+    5  Lenovo
+Table: workers
+ID      NAME                             AGE     COMPANY_ID
+------- ------------------------- ---------- -------------
+    1   Derick Davison                    20            5
+    2   Bari Becnel                       50            1
+    3   Maddie Mueller                    33            2
+    4   Eva Emrich                        23            1
+    5   Katelyn Kunze                     55            3
+    6   Hue Hover                         26            2
+    7   Lucas Lout                        57            4
+    8   Granville Grande                  30            5
+    9   Robt Rude                         39            3
+   10   Lisha Lewin                       25            4
+   11   Aron Atlas                        52            3
+   12   Chester Coddington                44            4
+   13   Diedre Dominy                     31            1
+   14   Evie Edgell                       35            2
+   15   Judy Johanson                     36            5
+
+ Answer: 
+Select company.NAME as Company_Name, AGE as Younges_Worker_age
+From (
+Select COMPANY_ID, c.name ,avg(AGE) as avg_age,
+RANK() OVER ([PARTITION BY COMPANY_ID] ORDER BY avg(AGE) asc) as Rank
+from workers as w
+left join company as c on w.COMPANY_ID=c.ID 
+group by 1,2 
+having Rank = 1) t;
