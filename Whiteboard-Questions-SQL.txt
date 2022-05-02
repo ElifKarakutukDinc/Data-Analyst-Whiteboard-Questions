@@ -205,3 +205,18 @@ Answer:
 select name
 from beverages
 where contributed_by not like '% %';
+
+Question 2-4
+We’ll work with the beverages table again. Its first rows are given below.
+
+id	name	     launch_year	fruit_pct	contributed_by
+1	Bruzz	     2007	          45	    Sam Malone
+2	Delightful	 2008	          41	    Sam Malone
+3	Nice	     2015	          42	    Sam Malone
+Write a query that finds the average fruit_pct by contributor and displays it ascending order.
+
+Answer:
+Select contributed_by, avg(fruit_pct) avg_fruit_pct
+from beverages
+group by 1
+order by 2:
