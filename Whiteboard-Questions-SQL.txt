@@ -205,3 +205,34 @@ Answer:
 select name
 from beverages
 where contributed_by not like '% %';
+
+3- https://www.interviewquery.com/blog-sql-interview-questions/
+Question 3-1
+We are given two tables, a users table with demographic information and the neighborhood they live in and a neighborhoods table. 
+Write a query that returns all of the neighborhoods that have 0 users.
+
+users table:
+
+COLUMNS	              TYPE
+id	              int
+name	              varchar
+neighborhood_id	int
+created_at	      datetime
+
+neighborhoods table:
+
+COLUMNS	    TYPE
+id	    int
+name	    varchar
+city_id	    int
+
+Hint: Our aim to find all the neighborhoods without users. In a sense we need all the neighborhoods that do not have a singular user living in them. 
+This means we have to introduce a concept of existence of a column in one table, but not in the other.
+
+Answer: 
+select id 
+from (select n.id, count(u.id) as user_count
+from neighborhoods as n 
+left join users as u on n.id=u.neighborhood_id
+group by 1
+having user_count=0) t;
