@@ -120,4 +120,8 @@ Select DEPT_ID, Max(SALARY) as max_salary
 From EMPLOYEE
 Group by 1;
 
+SQL Exercise 6 – Write a Date Query
+Write an SQL query that displays the current date.
 
+Answer:
+Select current_date;
