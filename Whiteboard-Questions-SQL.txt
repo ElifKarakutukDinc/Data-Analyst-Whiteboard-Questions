@@ -139,5 +139,7 @@ having id_count >1;
 Delete From EMPLOYEE
 Where (Select emp.id
 from EMPLOYEE as emp
-inner join WORKERS as wr ON emp.id=wr.employee_id);
+inner join WORKERS as wr ON emp.id=wr.employee_id
+group by 1
+having id_count >1);
 
