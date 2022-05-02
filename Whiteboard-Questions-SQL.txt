@@ -147,9 +147,10 @@ class_id	class_name	professor_id	semester
 46	        statistics	625	            2015_winter
 
 Answer: 
-Select *
+Select alumni.*
 from alumni as a
 left join evaluation as e on a.student_id=e.student_id
-Where grade > 16;
+left join curricula as c on c.class_id=e.class_id
+Where grade > 16 and class_name= "calculus":
 
 
