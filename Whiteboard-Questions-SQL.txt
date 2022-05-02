@@ -112,6 +112,36 @@ name
  Gene Roberts
  Bryant Summers
 
+
+SQL Exercise 5 – Write a Query
+The EMPLOYEE table has the following attributes: NAME, DEPT_ID, and SALARY. Write a query that shows the highest salary in each department.
+
+Select DEPT_ID, Max(SALARY) as max_salary
+From EMPLOYEE
+Group by 1;
+
+SQL Exercise 6 – Write a Date Query
+Write an SQL query that displays the current date.
+
+Answer:
+Select current_date;
+
+SQL Exercise 8 – Find and Delete Duplicates
+Write an SQL query to find duplicate rows in two tables (EMPLOYEE and WORKERS), and then write a query to delete the duplicates.
+
+Answer:
+Select emp.id, count(emp.id) as id_count
+from EMPLOYEE as emp
+inner join WORKERS as wr ON emp.id=wr.employee_id
+group by 1
+having id_count >1;
+
+Delete From EMPLOYEE
+Where (Select emp.id
+from EMPLOYEE as emp
+inner join WORKERS as wr ON emp.id=wr.employee_id);
+
+
 SQL Exercise 9 – Write a Complex Query
 Write a query that lists courses’ subject names and the number of students taking the course only if the course has three or more students enrolled.
 
