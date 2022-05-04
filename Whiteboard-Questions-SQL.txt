@@ -140,7 +140,9 @@ having id_count >1;
 Delete From EMPLOYEE
 Where (Select emp.id
 from EMPLOYEE as emp
-inner join WORKERS as wr ON emp.id=wr.employee_id);
+inner join WORKERS as wr ON emp.id=wr.employee_id
+group by 1
+having id_count >1);
 
 SQL Exercise 9 – Write a Complex Query
 Write a query that lists courses’ subject names and the number of students taking the course only if the course has three or more students enrolled.
