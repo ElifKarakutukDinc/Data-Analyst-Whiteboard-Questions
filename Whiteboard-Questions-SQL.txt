@@ -346,11 +346,13 @@ We call the “department_id” a foreign key because it is a column that refere
 
 Based on this common field, we can join both tables, using INNER JOIN, to associate the name of the department name to the employees that are a part of those departments.
 
-With Ranking as(SELECT e.id,salary,
+Answer:
+With Ranking as(
+SELECT e.id,salary,
 DENSE_RANK() OVER (ORDER BY salary desc) as ranking
 FROM employees as e 
 INNER JOIN departments as d ON e.department_id = d.id
-where department_id=1)
+where d.name=engineering)
 
 select salary
 from Ranking
