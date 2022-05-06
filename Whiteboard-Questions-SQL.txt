@@ -1,4 +1,7 @@
-Source: https://learnsql.com/blog/common-sql-job-interview-questions/
+Source: 
+1- https://learnsql.com/blog/common-sql-job-interview-questions/
+2- https://www.dataquest.io/blog/sql-interview-questions/ 
+3- https://www.interviewquery.com/blog-sql-interview-questions/
 
 SQL Exercise 1 – Write a Statement
 Write an SQL statement that lists school names, student names, and their cities only if the school and the student are in the same city and the student is not from New York.
@@ -138,8 +141,9 @@ having id_count >1;
 Delete From EMPLOYEE
 Where (Select emp.id
 from EMPLOYEE as emp
-inner join WORKERS as wr ON emp.id=wr.employee_id);
-
+inner join WORKERS as wr ON emp.id=wr.employee_id
+group by 1
+having id_count >1);
 
 SQL Exercise 9 – Write a Complex Query
 Write a query that lists courses’ subject names and the number of students taking the course only if the course has three or more students enrolled.
@@ -178,6 +182,36 @@ left join student as st on st.subject_id=sb.subject_id
 group by 1
 having student_id_count >2; 
 
+Question 2-1
+Given the table below, write a SQL query that retrieves the personal data about alumni who scored above 16 on their calculus exam.
+
+Table alumni
+
+student_id	name	surname	birth_date	faculty
+347	        Daniela	Lopes	1991-04-26	Medical School
+348	        Robert	Fischer	1991-03-09	Mathematics
+
+Table evaluation
+
+student_id	class_id	exam_date	grade
+347	        74	        2015-06-19	16
+347	        87	        2015-06-06	20
+348	        74	        2015-06-19	13
+
+Table curricula
+
+class_id	class_name	professor_id	semester
+74	        algebra	    435	            2015_summer
+87	        calculus	532	            2015_summer
+46	        statistics	625	            2015_winter
+
+Answer: 
+Select alumni.*
+from alumni as a
+left join evaluation as e on a.student_id=e.student_id
+left join curricula as c on c.class_id=e.class_id
+Where grade > 16 and class_name= "calculus":
+
 Question 2-2
 We’ll work with the beverages table. Its first rows are given below.
 
@@ -205,6 +239,21 @@ Answer:
 select name
 from beverages
 where contributed_by not like '% %';
+
+Question 2-4
+We’ll work with the beverages table again. Its first rows are given below.
+
+id	name	     launch_year	fruit_pct	contributed_by
+1	Bruzz	     2007	          45	    Sam Malone
+2	Delightful	 2008	          41	    Sam Malone
+3	Nice	     2015	          42	    Sam Malone
+Write a query that finds the average fruit_pct by contributor and displays it ascending order.
+
+Answer:
+Select contributed_by, avg(fruit_pct) avg_fruit_pct
+from beverages
+group by 1
+order by 2:
 
 Question 2-5
 Take a look at the query given below:
@@ -235,4 +284,36 @@ Answer: FROM, WHERE, HAVING, SELECT, LIMIT
 *Distinct: Of the remaining rows, rows with duplicate values in the column marked as DISTINCT will be discarded.
 *Order by: It sorts our results.
 *Limit: It limits our results. 
+
+
+Question 3-1
+We are given two tables, a users table with demographic information and the neighborhood they live in and a neighborhoods table. 
+Write a query that returns all of the neighborhoods that have 0 users.
+
+users table:
+
+COLUMNS	              TYPE
+id	              int
+name	              varchar
+neighborhood_id	int
+created_at	      datetime
+
+neighborhoods table:
+
+COLUMNS	    TYPE
+id	    int
+name	    varchar
+city_id	    int
+
+Hint: Our aim to find all the neighborhoods without users. In a sense we need all the neighborhoods that do not have a singular user living in them. 
+This means we have to introduce a concept of existence of a column in one table, but not in the other.
+
+Answer: 
+select id 
+from (select n.id, count(u.id) as user_count
+from neighborhoods as n 
+left join users as u on n.id=u.neighborhood_id
+group by 1
+having user_count=0) t;
+
 
