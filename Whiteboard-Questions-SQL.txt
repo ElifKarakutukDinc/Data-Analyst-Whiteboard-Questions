@@ -316,4 +316,35 @@ left join users as u on n.id=u.neighborhood_id
 group by 1
 having user_count=0) t;
 
+Question 3-6: Given the revenue transactions table above, write a query that finds the third purchase of every user.
 
+`transactions` table:
+
+COLUMN	TYPE
+id	integer
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+Output:
+
+COLUMN	TYPE
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+We need an indicator of which purchase was the third value. Whenever we think of ranking our dataset, it is helpful to then immediately think of a specific window function we can use.
+
+We need to apply the RANK function to the transactions table. The RANK function is a window function that assigns a rank to each row in the partition of the result set.
+
+Answer: 
+With Ranking as(
+	SELECT id,
+	DENSE_RANK() OVER ([PARTITION by user_id] ORDER BY created_at asc) as ranking
+	FROM transactions 
+)
+
+select user_id,created_at,product_id,quantity
+from Ranking as r 
+left join transactions as t on r.id=t.id
+where ranking = 3;
