@@ -317,3 +317,41 @@ group by 1
 having user_count=0) t;
 
 
+Question 3-5: Write a SQL query to select the 2nd highest salary in the engineering department. 
+If more than one person shares the highest salary, the query should select the next highest salary.
+
+employees
++---------------+---------+
+| id            | int     |
+| first_name    | varchar |
+| last_name     | varchar |
+| salary        | int     |
+| department_id | int |--+
++---------------+---------+  |
+|
+departments                  |
++---------------+---------+  |
+| id            | int     |<-+
+| name          | varchar |
++---------------+---------+
+Output:
+
+COLUMN	TYPE
+salary	int
+
+First, we need the name of the department to be associated with each employee in the employees table, to understand which department each employee is a part of.
+
+The “department_id” field in the employees table is associated with the “id” field in the departments table. 
+We call the “department_id” a foreign key because it is a column that references the primary key of another table, which in this case is the “id” field in the departments table.
+
+Based on this common field, we can join both tables, using INNER JOIN, to associate the name of the department name to the employees that are a part of those departments.
+
+With Ranking as(SELECT e.id,salary,
+DENSE_RANK() OVER (ORDER BY salary desc) as ranking
+FROM employees as e 
+INNER JOIN departments as d ON e.department_id = d.id
+where department_id=1)
+
+select salary
+from Ranking
+where ranking = 2;
