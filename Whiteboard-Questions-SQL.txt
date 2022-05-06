@@ -362,11 +362,11 @@ Output:
 # 98787      2018      0
 
 Answer:
-select t1.user_id, t1.year,
-CASE
-    WHEN t2.year = '2018' and t2.employer_ein <> t1.employer_ein THEN 1 
-    ELSE 0
-END as new_ein_flag
-from employer t1
-inner join employer t2 ON t1.user_id = t2.user_id
-where t2.year= '2018';
+select user_id, year,
+       max(case when min_year = max_year then 1 else 0 end) as new_ein_flag
+from (select employer.*, max(year) over () as max_year,
+             min(year) over (partition by user_id, employer_ein) as min_year
+      from employer
+     ) employer
+where year = max_year
+group by 1,2;
