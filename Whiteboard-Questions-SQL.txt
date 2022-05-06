@@ -317,3 +317,31 @@ group by 1
 having user_count=0) t;
 
 
+Question 3-7: Given three tables, representing customer transactions and customer attributes: Write a query to get the average order value by gender.
+
+transactions table:
+COLUMN	TYPE
+id	integer
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+
+users table:
+COLUMN	TYPE
+id	integer
+name	varchar
+sex	varchar
+
+products table:
+COLUMN	TYPE
+id	integer
+name	string
+price	float
+
+Answer: 
+Select sex, avg(quantity*price) as order_value
+from transactions as t 
+left join users as u on t.user_id=u.id
+left join products as p on t.product_id=p.id
+group by 1; 
