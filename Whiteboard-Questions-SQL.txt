@@ -316,6 +316,93 @@ left join users as u on n.id=u.neighborhood_id
 group by 1
 having user_count=0) t;
 
+Question 3-4: We are given a table called employers that consists of a user_id, year, and employer EIN label. 
+Users can have multiple employers dictated by the different EIN labels.
+
+Write a query to add a flag to each user if they have added a new employer in the last year in the table.
+
+employers table:
+
+COLUMN	TYPE
+user_id	integer
+year	string
+employer_ein	string
+
+Example:
+employers table: 
+# user_id    year    employer_ein
+# 34323      2018    A
+# 34323      2018    B
+# 34323      2018    C
+# 34323      2017    F
+# 34323      2017    A
+# 34323      2017    B
+#
+# 86323      2018    A
+# 86323      2018    B
+# 86323      2018    C
+# 86323      2017    B
+#
+# 98787      2018    A
+# 98787      2018    B
+# 98787      2018    F
+# 98787      2017    F
+# 98787      2017    B
+# 98787      2017    A
+#
+# 55559      2018    A
+# 55559      2018    B
+# 55559      2018    C
+
+Output:
+# user_id    year      new_ein_flag
+# 34323      2018      1
+# 86323      2018      1
+# 98787      2018      0
+
+Answer:
+select user_id, year,
+       max(case when min_year = max_year then 1 else 0 end) as new_ein_flag
+from (select employer.*, max(year) over () as max_year,
+             min(year) over (partition by user_id, employer_ein) as min_year
+      from employer
+     ) employer
+where year = max_year
+group by 1,2;
+
+
+Question 3-6: Given the revenue transactions table above, write a query that finds the third purchase of every user.
+
+`transactions` table:
+COLUMN	TYPE
+id	integer
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+
+Output:
+COLUMN	TYPE
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+We need an indicator of which purchase was the third value. Whenever we think of ranking our dataset, it is helpful to then immediately think of a specific window function we can use.
+
+We need to apply the RANK function to the transactions table. The RANK function is a window function that assigns a rank to each row in the partition of the result set.
+
+Answer: 
+With Ranking as(
+	SELECT id,
+	DENSE_RANK() OVER ([PARTITION by user_id] ORDER BY created_at asc) as ranking
+	FROM transactions 
+)
+
+select user_id,created_at,product_id,quantity
+from Ranking as r 
+left join transactions as t on r.id=t.id
+where ranking = 3;
+
 
 Question 3-7: Given three tables, representing customer transactions and customer attributes: Write a query to get the average order value by gender.
 
