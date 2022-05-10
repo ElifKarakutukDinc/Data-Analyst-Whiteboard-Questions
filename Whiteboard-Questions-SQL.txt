@@ -345,10 +345,14 @@ The ratings of each search result (1 to 5 where 5 is high relevance and 1 is low
 For example, if the search query for 'tiger' has 5s for each result, then that would average to be a perfect result. Therefore, taking the average of the ratings seems like a good way to measure the quality of the search results.
 
 Answer: 
-select QUERY, round(avg(rating),2) as avg_rating,
-RANK() OVER (
-    [PARTITION BY QUERY]
-    ORDER BY round(avg(rating),2) desc
-) as Rank
-from search_results
-group by 1;
+with a as (
+select query, avg(position) avg_pos, avg(rating) avg_rat,
+std(position) std_pos, std(rating) std_rat
+from search_results group by 1)
+
+select s.query,
+sum((position -avg_pos)(rating - avg_rat))/
+((count()-1)std_posstd_rat)
+as avg_rating
+from search_results s join a on s.query = a.query
+GROUP BY 1;
