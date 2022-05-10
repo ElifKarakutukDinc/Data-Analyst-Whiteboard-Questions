@@ -543,4 +543,10 @@ left join users as u on t.user_id=u.id
 left join products as p on t.product_id=p.id
 group by 1; 
 
->>>>>>> master
+Question 3-9: Write a query to get the month-over-month change of new users in January.
+
+Answer: 
+select  DATEPART(month, Registration_Date) as Registration_Month, count(id) as new_user_count
+from user
+group by 1 
+having DATEPART(month, Registration_Date)= 1; 
