@@ -632,3 +632,55 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
+
+Question 3-10: Given a table of job postings, write a query to breakdown the number of users that have posted their jobs once versus the number of users that have posted at least one job multiple times.
+
+job_postings table:
+
+COLUMN	TYPE
+id	integer
+job_id	integer
+user_id	integer
+date_posted	datetime
+This question is kind of complicated so it's helpful to break it into multiple steps. First let's visualize what the output would look like.
+
+Output:
+
+COLUMN	TYPE
+posted_jobs_once	int
+posted_at_least_one_job_multiple_times	int
+We want the value of two different metrics, the number of users that have posted their jobs once versus the number of users that have posted at least one job multiple times. What does that mean exactly?
+
+Well if a user has 5 jobs but only posted them once, then they are part of the first statement. But if they have a 5 jobs and posted a total of 7 times, that means that they had to at least posted one job multiple times.
+
+To get to that point, we need a table with the count of user-job pairings and the number of times each job gets posted. We can pretty easily get to that point with just a simple GROUP BY on two variables, user_id and job_id.
+
+Now we just need a way to differentiate the users that posted each job once from users that posted multiple times. Lets go back to our example. 
+We can deduce that if we take the sum of the number of rows for each user and the sum of the number of times each job is posted, they must be equal for the user to have posted each job only once, since we grouped by the user and the job id.
+
+Answer: 
+with total_job as (
+select user_id, date_posted, count(job_id) as total_job
+from job_postings 
+group by 1,2),
+
+total_post as (
+select user_id, date_posted, count(id) as total_post
+from job_postings 
+group by 1,2),
+
+posted_jobs_once as (
+select user_id
+from total_job as tj 
+inner join total_post as tp on tj.user_id=tp.user_id
+where total_post <= total_job),
+
+posted_at_least_one_job_multiple_times as (
+select user_id
+from total_job as tj 
+inner join total_post as tp on tj.user_id=tp.user_id
+where total_post > total_job)
+
+select pjo.user_id as posted_jobs_once,pjm.user_id as posted_at_least_one_job_multiple_times
+from posted_jobs_once as pjo  
+inner join posted_at_least_one_job_multiple_times as pjm on pjo.user_id=pjm.user_id;
