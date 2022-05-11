@@ -143,12 +143,20 @@ ID      NAME                             AGE     COMPANY_ID
    14   Evie Edgell                       35            2
    15   Judy Johanson                     36            5
 
- Answer: 
-Select company.NAME as Company_Name, AGE as Younges_Worker_age
-From (
-Select COMPANY_ID, c.name ,avg(AGE) as avg_age,
-RANK() OVER ([PARTITION BY COMPANY_ID] ORDER BY avg(AGE) asc) as Rank
-from workers as w
-left join company as c on w.COMPANY_ID=c.ID 
-group by 1,2 
-having Rank = 1) t;
+Answer: 
+With avg_workers as( 
+Select COMPANY_ID, avg(AGE) as avg_age,
+from workers
+group by 1
+),
+
+youngest_worker as(
+Select COMPANY_ID, min(AGE) as Younges_Worker_age
+from workers
+group by 1
+)
+
+select c.name as company_name, w.name as worker_name,avg_age
+from company as c 
+left join avg_workers  as aw on c.id=aw.COMPANY_ID
+left join youngest_worker  as yw on c.id=yw.COMPANY_ID;
