@@ -1,4 +1,7 @@
-Source: https://learnsql.com/blog/common-sql-job-interview-questions/
+Source: 
+1- https://learnsql.com/blog/common-sql-job-interview-questions/
+2- https://www.dataquest.io/blog/sql-interview-questions/ 
+3- https://www.interviewquery.com/blog-sql-interview-questions/
 
 SQL Exercise 1 – Write a Statement
 Write an SQL statement that lists school names, student names, and their cities only if the school and the student are in the same city and the student is not from New York.
@@ -113,6 +116,73 @@ name
  Bryant Summers
 
 
+SQL Exercise 5 – Write a Query
+The EMPLOYEE table has the following attributes: NAME, DEPT_ID, and SALARY. Write a query that shows the highest salary in each department.
+
+Select DEPT_ID, Max(SALARY) as max_salary
+From EMPLOYEE
+Group by 1;
+
+SQL Exercise 6 – Write a Date Query
+Write an SQL query that displays the current date.
+
+Answer:
+Select current_date;
+
+SQL Exercise 8 – Find and Delete Duplicates
+Write an SQL query to find duplicate rows in two tables (EMPLOYEE and WORKERS), and then write a query to delete the duplicates.
+
+Answer:
+Select emp.id, count(emp.id) as id_count
+from EMPLOYEE as emp
+inner join WORKERS as wr ON emp.id=wr.employee_id
+group by 1
+having id_count >1;
+
+Delete From EMPLOYEE
+Where (Select emp.id
+from EMPLOYEE as emp
+inner join WORKERS as wr ON emp.id=wr.employee_id
+group by 1
+having id_count >1);
+
+SQL Exercise 9 – Write a Complex Query
+Write a query that lists courses’ subject names and the number of students taking the course only if the course has three or more students enrolled.
+
+Table: subject
+subject_id  subject_name       max_score        lecturer
+----------  ----------         ----------       -----------  
+ 11         Math                    130         Christena Solem 
+ 12         Computer Science         50         Jaime Pille 
+ 13         Biology                 300         Carrol Denmark 
+ 14         Geography               220         Yuette Galang 
+ 15         Physics                 110         Colton Rather 
+ 16         Chemistry               400         Nan Mongeau
+Table: student
+student_id   student_name       city           subject_id
+-----------  ------------       ----------    -----------
+2001         Thurman Thorn      New York               11
+2002         Sharda Clemens     San Francisco          12
+2003         Buck Elkins        New York               13
+2004         Fabian Johns       Boston                 15
+2005         Brad Cameron       Stanford               11
+2006         Sofia Roles        Boston                 16
+2007         Rory Pietila       New Haven              12
+2008         Cicely Weish       Tulsa                  14
+2011         Richard Curtin     Boston                 11
+2012         Kassy Ledger       Stanford               11
+2013         Henry Ledger       Miami                  13
+2014         Darius Fidzberg    San Francisco          12
+2015         Darcey Fiorillo    Chicago                14
+
+
+Answer: 
+Select subject_name, count(student_id) as student_id_count
+from subject as sb
+left join student as st on st.subject_id=sb.subject_id
+group by 1
+having student_id_count >2; 
+
 SQL Exercise 10 – Write a Complex Query
 Write a query that displays the average age of workers in each company. The result should show the name of the company and the age of the company’s youngest worker.
 
@@ -160,3 +230,367 @@ select c.name as company_name, w.name as worker_name,avg_age
 from company as c 
 left join avg_workers  as aw on c.id=aw.COMPANY_ID
 left join youngest_worker  as yw on c.id=yw.COMPANY_ID;
+
+Question 2-1
+Given the table below, write a SQL query that retrieves the personal data about alumni who scored above 16 on their calculus exam.
+
+Table alumni
+
+student_id	name	surname	birth_date	faculty
+347	        Daniela	Lopes	1991-04-26	Medical School
+348	        Robert	Fischer	1991-03-09	Mathematics
+
+Table evaluation
+
+student_id	class_id	exam_date	grade
+347	        74	        2015-06-19	16
+347	        87	        2015-06-06	20
+348	        74	        2015-06-19	13
+
+Table curricula
+
+class_id	class_name	professor_id	semester
+74	        algebra	    435	            2015_summer
+87	        calculus	532	            2015_summer
+46	        statistics	625	            2015_winter
+
+Answer: 
+Select alumni.*
+from alumni as a
+left join evaluation as e on a.student_id=e.student_id
+left join curricula as c on c.class_id=e.class_id
+Where grade > 16 and class_name= "calculus":
+
+Question 2-2
+We’ll work with the beverages table. Its first rows are given below.
+
+id	name	    launch_year	fruit_pct	contributed_by
+1	Bruzz	    2007	     45	        Sam Malone
+2	Delightful	2008	     41	        Sam Malone
+3	Nice	    2015	     42	        Sam Malone
+Write a query to extract only beverages where fruit_pct is between 35 and 40 (including both ends).
+
+Answer:
+Select id,name
+from beverages
+where fruit_pct>= 35 and fruit_pct<=40;
+
+Question 2-3
+We’ll work with the beverages table again. Its first rows are given below.
+
+id	name	launch_year	fruit_pct	contributed_by
+1	Bruzz	2007	45	Sam Malone
+2	Delightful	2008	41	Sam Malone
+3	Nice	2015	42	Sam Malone
+Write a query to extract only beverages whose contributor only has one name
+
+Answer: 
+select name
+from beverages
+where contributed_by not like '% %';
+
+Question 2-4
+We’ll work with the beverages table again. Its first rows are given below.
+
+id	name	     launch_year	fruit_pct	contributed_by
+1	Bruzz	     2007	          45	    Sam Malone
+2	Delightful	 2008	          41	    Sam Malone
+3	Nice	     2015	          42	    Sam Malone
+Write a query that finds the average fruit_pct by contributor and displays it ascending order.
+
+Answer:
+Select contributed_by, avg(fruit_pct) avg_fruit_pct
+from beverages
+group by 1
+order by 2:
+
+Question 2-5
+Take a look at the query given below:
+
+SELECT column, AGG_FUNC(column_or_expression), …
+  FROM a_table
+ INNER JOIN some_table
+       ON a_table.column = some_table.column
+ WHERE a_condition
+ GROUP BY column
+HAVING some_condition
+ ORDER BY column
+ LIMIT 5;
+In what order does SQL run the clauses? Select the correct option from the list of choices below:
+
+SELECT, FROM, WHERE, GROUP BY
+FROM, WHERE, HAVING, SELECT, LIMIT
+SELECT, FROM, INNER JOIN, GROUP BY
+FROM, SELECT, LIMIT, WHERE
+
+Answer: FROM, WHERE, HAVING, SELECT, LIMIT
+*From: Order of execution of a query starts with "From" statement. Because if we cannot access our table we cannot execute anything. 
+*Joins: Join is for combining columns from one or more tables into a new table. Its logic is the same as the From statement. We have to firstly access tables.
+*Where: If we filter our data firstly we can improve our query performance. Because of it, after accessing tables we filter them. 
+*Group by: Group by is used for aggregating data by cohorts. 
+*Having: Having is for filtering aggregated columns. If the query has a GROUP BY clause, then the constraints in the HAVING clause are then applied to the grouped rows 
+*Select: Displays final columns. 
+*Distinct: Of the remaining rows, rows with duplicate values in the column marked as DISTINCT will be discarded.
+*Order by: It sorts our results.
+*Limit: It limits our results. 
+
+
+Question 3-1
+We are given two tables, a users table with demographic information and the neighborhood they live in and a neighborhoods table. 
+Write a query that returns all of the neighborhoods that have 0 users.
+
+users table:
+
+COLUMNS	              TYPE
+id	              int
+name	              varchar
+neighborhood_id	int
+created_at	      datetime
+
+neighborhoods table:
+
+COLUMNS	    TYPE
+id	    int
+name	    varchar
+city_id	    int
+
+Hint: Our aim to find all the neighborhoods without users. In a sense we need all the neighborhoods that do not have a singular user living in them. 
+This means we have to introduce a concept of existence of a column in one table, but not in the other.
+
+Answer: 
+select id 
+from (select n.id, count(u.id) as user_count
+from neighborhoods as n 
+left join users as u on n.id=u.neighborhood_id
+group by 1
+having user_count=0) t;
+
+Question 3-2: Write a query to return pairs of projects where the end date of one project matches the start date of another project.
+
+projects table:
+
+COLUMN	    TYPE
+id	        integer
+title	    string
+start_date	datetime
+end_date	datetime
+budget	    float
+
+Output:
+
+COLUMN	            TYPE
+project_title_end	string
+project_title_start	string
+date	            datetime
+Here, we are trying to use values in a single table to generate comparisons. Specifically, we are looking for pairs of projects such that one project starts on the same day that another project ends.
+
+This will require us to perform a self-join.
+
+Hint: Remember, when performing a self-join, the order of your values is very important. You will want to be particular about aliasing to make sure you keep your tables straight.
+
+Answer: 
+select t2.title as project_title_end, t1.title as project_title_start
+from projects t1
+inner join projects t2 ON t1.start_date = t2.end_date;
+
+Question 3-3:You are given a table that represents search results from searches on Facebook. 
+The query column is the search term, position column represents each position the search result came in, 
+and the rating column represents the human rating of the search result from 1 to 5 where 5 is high relevance and 1 is low relevance.
+
+1. Write a query to compute a metric to measure the quality of the search results for each query.
+
+2. You want to be able to compute a metric that measures the precision of the ranking system based on position. For example, if the results for dog and cat are....
+
+QUERY	RESULT_ID	POSITION	RATING	NOTES
+dog	    1000	     1	         2	    picture of hotdog
+dog	    998	         2	         4	    dog walking
+dog	    342	         3	         1	    zebra
+cat	    123	         1	         4	    picture of cat
+cat	    435	         2	         2	    cat memes
+cat	    545	         3	         1	    pizza shops
+...we would rank 'cat' as having a better search result ranking precision than 'dog' based on the correct sorting by rating.
+
+Write a query to create a metric that can validate and rank the queries by their search result precision. Round the metric (avg_rating column) to 2 decimal places.
+
+search_results table:
+
+COLUMN	    TYPE
+query	    Varchar
+result_id	integer
+position	integer
+rating	    integer
+The ratings of each search result (1 to 5 where 5 is high relevance and 1 is low relevance) could be used to compute a metric that measures the quality of the search results for each query.
+
+For example, if the search query for 'tiger' has 5s for each result, then that would average to be a perfect result. Therefore, taking the average of the ratings seems like a good way to measure the quality of the search results.
+
+Answer: 
+with a as (
+select query, avg(position) avg_pos, avg(rating) avg_rat,
+std(position) std_pos, std(rating) std_rat
+from search_results group by 1)
+
+select s.query,
+sum((position -avg_pos)(rating - avg_rat))/
+((count()-1)std_posstd_rat)
+as avg_rating
+from search_results s join a on s.query = a.query
+GROUP BY 1;
+
+Question 3-4: We are given a table called employers that consists of a user_id, year, and employer EIN label. 
+Users can have multiple employers dictated by the different EIN labels.
+
+Write a query to add a flag to each user if they have added a new employer in the last year in the table.
+
+employers table:
+
+COLUMN	TYPE
+user_id	integer
+year	string
+employer_ein	string
+
+Example:
+employers table: 
+# user_id    year    employer_ein
+# 34323      2018    A
+# 34323      2018    B
+# 34323      2018    C
+# 34323      2017    F
+# 34323      2017    A
+# 34323      2017    B
+#
+# 86323      2018    A
+# 86323      2018    B
+# 86323      2018    C
+# 86323      2017    B
+#
+# 98787      2018    A
+# 98787      2018    B
+# 98787      2018    F
+# 98787      2017    F
+# 98787      2017    B
+# 98787      2017    A
+#
+# 55559      2018    A
+# 55559      2018    B
+# 55559      2018    C
+
+Output:
+# user_id    year      new_ein_flag
+# 34323      2018      1
+# 86323      2018      1
+# 98787      2018      0
+
+Answer:
+select user_id, year,
+       max(case when min_year = max_year then 1 else 0 end) as new_ein_flag
+from (select employer.*, max(year) over () as max_year,
+             min(year) over (partition by user_id, employer_ein) as min_year
+      from employer
+     ) employer
+where year = max_year
+group by 1,2;
+
+Question 3-5: Write a SQL query to select the 2nd highest salary in the engineering department. 
+If more than one person shares the highest salary, the query should select the next highest salary.
+
+employees
++---------------+---------+
+| id            | int     |
+| first_name    | varchar |
+| last_name     | varchar |
+| salary        | int     |
+| department_id | int |--+
++---------------+---------+  |
+|
+departments                  |
++---------------+---------+  |
+| id            | int     |<-+
+| name          | varchar |
++---------------+---------+
+Output:
+
+COLUMN	TYPE
+salary	int
+
+First, we need the name of the department to be associated with each employee in the employees table, to understand which department each employee is a part of.
+
+The “department_id” field in the employees table is associated with the “id” field in the departments table. 
+We call the “department_id” a foreign key because it is a column that references the primary key of another table, which in this case is the “id” field in the departments table.
+
+Based on this common field, we can join both tables, using INNER JOIN, to associate the name of the department name to the employees that are a part of those departments.
+
+Answer:
+With Ranking as(SELECT e.id,salary,
+DENSE_RANK() OVER (ORDER BY salary desc) as ranking
+FROM employees as e 
+INNER JOIN departments as d ON e.department_id = d.id
+where d.name='engineering')
+
+select salary
+from Ranking
+where ranking = 2;
+
+Question 3-6: Given the revenue transactions table above, write a query that finds the third purchase of every user.
+
+`transactions` table:
+COLUMN	TYPE
+id	integer
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+
+Output:
+COLUMN	TYPE
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+We need an indicator of which purchase was the third value. Whenever we think of ranking our dataset, it is helpful to then immediately think of a specific window function we can use.
+
+We need to apply the RANK function to the transactions table. The RANK function is a window function that assigns a rank to each row in the partition of the result set.
+
+Answer: 
+With Ranking as(
+	SELECT id,
+	DENSE_RANK() OVER ([PARTITION by user_id] ORDER BY created_at asc) as ranking
+	FROM transactions 
+)
+
+select user_id,created_at,product_id,quantity
+from Ranking as r 
+left join transactions as t on r.id=t.id
+where ranking = 3;
+
+
+Question 3-7: Given three tables, representing customer transactions and customer attributes: Write a query to get the average order value by gender.
+
+transactions table:
+COLUMN	TYPE
+id	integer
+user_id	integer
+created_at	datetime
+product_id	integer
+quantity	integer
+
+users table:
+COLUMN	TYPE
+id	integer
+name	varchar
+sex	varchar
+
+products table:
+COLUMN	TYPE
+id	integer
+name	string
+price	float
+
+Answer: 
+Select sex, avg(quantity*price) as order_value
+from transactions as t 
+left join users as u on t.user_id=u.id
+left join products as p on t.product_id=p.id
+group by 1; 
+
+>>>>>>> master
+>>>>>>> master
