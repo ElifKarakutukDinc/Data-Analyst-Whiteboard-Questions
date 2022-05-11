@@ -115,6 +115,7 @@ name
  Gene Roberts
  Bryant Summers
 
+
 SQL Exercise 5 – Write a Query
 The EMPLOYEE table has the following attributes: NAME, DEPT_ID, and SALARY. Write a query that shows the highest salary in each department.
 
@@ -181,6 +182,54 @@ from subject as sb
 left join student as st on st.subject_id=sb.subject_id
 group by 1
 having student_id_count >2; 
+
+SQL Exercise 10 – Write a Complex Query
+Write a query that displays the average age of workers in each company. The result should show the name of the company and the age of the company’s youngest worker.
+
+Table: company
+ID     NAME
+------ -------------
+    1  Amazon
+    2  Samsung
+    3  LG
+    4  Kia
+    5  Lenovo
+Table: workers
+ID      NAME                             AGE     COMPANY_ID
+------- ------------------------- ---------- -------------
+    1   Derick Davison                    20            5
+    2   Bari Becnel                       50            1
+    3   Maddie Mueller                    33            2
+    4   Eva Emrich                        23            1
+    5   Katelyn Kunze                     55            3
+    6   Hue Hover                         26            2
+    7   Lucas Lout                        57            4
+    8   Granville Grande                  30            5
+    9   Robt Rude                         39            3
+   10   Lisha Lewin                       25            4
+   11   Aron Atlas                        52            3
+   12   Chester Coddington                44            4
+   13   Diedre Dominy                     31            1
+   14   Evie Edgell                       35            2
+   15   Judy Johanson                     36            5
+
+Answer: 
+With avg_workers as( 
+Select COMPANY_ID, avg(AGE) as avg_age,
+from workers
+group by 1
+),
+
+youngest_worker as(
+Select COMPANY_ID, min(AGE) as Younges_Worker_age
+from workers
+group by 1
+)
+
+select c.name as company_name, w.name as worker_name,avg_age
+from company as c 
+left join avg_workers  as aw on c.id=aw.COMPANY_ID
+left join youngest_worker  as yw on c.id=yw.COMPANY_ID;
 
 Question 2-1
 Given the table below, write a SQL query that retrieves the personal data about alumni who scored above 16 on their calculus exam.
@@ -583,4 +632,3 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
-
