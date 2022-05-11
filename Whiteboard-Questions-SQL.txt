@@ -546,7 +546,10 @@ group by 1;
 Question 3-9: Write a query to get the month-over-month change of new users in January.
 
 Answer: 
-select  DATEPART(month, Registration_Date) as Registration_Month, count(id) as new_user_count
+select DATEPART(month, Registration_Date) as Registration_Month, 
+user_id,
+Count(user_id) as total_user, 
+lag(Count(user_id)) over(Partition user_id order by DATEPART(month, Registration_Date)) as previous_month_user,
+count(user_id) / LAG(count(user_id)) OVER (PARTITION BY user_id ORDER BY DATE_PART('month', date)) - 1 AS perc_change
 from user
-group by 1 
-having DATEPART(month, Registration_Date)= 1; 
+group by 1,2;
