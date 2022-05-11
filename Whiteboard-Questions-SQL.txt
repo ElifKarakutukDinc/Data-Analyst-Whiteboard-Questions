@@ -632,3 +632,38 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
+
+Question 3-11: Write a query to get a histogram of the number of posts per user in 2020.
+
+Answer-1: 
+select user_id, count(id) as freq
+from job_postings
+where date_posted between '2020-01-01' and '2020-12-31'
+group by 1;
+
+Answer-2: 
+select
+  floor(Count(id)/10.00)*10 as bin_floor,
+  count(user_id) as user_count
+from job_postings
+where date_posted between '2020-01-01' and '2020-12-31'
+group by 1
+order by 1;
+
+Answer-3: 
+with bins as (
+  select
+    floor(Count(id)/10.00)*10 as bin_floor,
+    count(user_id) as user_count
+  from job_postings
+  where date_posted between '2020-01-01' and '2020-12-31'
+  group by 1
+  order by 1
+)
+
+select
+  bin_floor,
+  bin_floor || ' - ' || (bin_floor + 10) as bin_range,
+  count
+from bins
+order by 1;
