@@ -592,5 +592,43 @@ left join users as u on t.user_id=u.id
 left join products as p on t.product_id=p.id
 group by 1; 
 
->>>>>>> master
->>>>>>> master
+Question 3-8: Given three tables: user_dimension, account_dimension, and download_facts, find the average number of downloads for free vs paying customers broken out by day.
+
+Note: The account_dimension table maps users to multiple accounts where they could be a paying customer or not. Also, round average_downloads to 2 decimal places.
+
+user_dimension table:
+COLUMN	TYPE
+user_id	int
+account_id	int
+
+account_dimension table:
+COLUMN	TYPE
+account_id	int
+paying_customer	boolean
+
+download_facts table:
+COLUMN	TYPE
+date	date
+user_id	int
+downloads	int
+
+Output:
+COLUMN	TYPE
+date	date
+paying_customer	boolean
+average_downloads	float
+
+Let is first break it down. What values in which tables can we join together to get the data that we need?
+
+Ideally the data should be broken down such that we could easily graph the values to visualize two line plots of free vs paying users. 
+The x-axis would represent the date and the y-axis would represent the average number of downloads.
+
+The user_dimension table represents the mapping between account ids and user ids while the account_dimension table holds the value if the customer is paying or not. 
+Lastly the download_facts table has the date and number of downloads per user.
+
+Answer: 
+select date, paying_customer, round(SUM(df.downloads)/COUNT(DISTINCT ud.user_id), 2) as average_downloads
+from user_dimension  as ud
+left join account_dimension as ad on ad.account_id=ud.account_id
+left join download_facts   as df on df.user_id=ud.user_id
+group by 1,2;
