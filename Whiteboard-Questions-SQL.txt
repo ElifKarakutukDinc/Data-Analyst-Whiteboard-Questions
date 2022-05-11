@@ -681,6 +681,6 @@ from total_job as tj
 inner join total_post as tp on tj.user_id=tp.user_id
 where total_post > total_job)
 
-select pjo.user_id as posted_jobs_once,pjm.user_id as posted_at_least_one_job_multiple_times
+select count(pjo.user_id) as posted_jobs_once, count(pjm.user_id) as posted_at_least_one_job_multiple_times
 from posted_jobs_once as pjo  
 inner join posted_at_least_one_job_multiple_times as pjm on pjo.user_id=pjm.user_id;
