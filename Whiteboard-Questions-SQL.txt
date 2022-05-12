@@ -632,3 +632,51 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
+
+Question 3-13: Given a table of students and their SAT test scores, write a query to return the two students with the closest test scores with the score difference.
+
+If there are multiple students with the same minimum score difference, select the student name combination that is higher in the alphabet.
+
+scores table:
+
+COLUMN	TYPE
+id	integer
+student	varchar
+score	integer
+
+Input:
+
+ID	STUDENT	SCORE
+1	Jack	1700
+2	Alice	2010
+3	Miles	2200
+4	Scott	2100
+
+Hint: Given the problem statement is referencing one table with only two columns, we have to self-reference different creations of the same table. 
+It is helpful to think about this problem in the form of two different tables with the same values.
+
+Answer: 
+with total_score as (
+select id, student, sum(score) as total_score,
+dense_rank() over (order by sum(score) desc, student asc) as d_rank
+from score 
+group by 1,2),
+
+top_student as (select student 
+from table
+where rank= 1
+limit 1),
+
+top_second_student as (select student 
+from table
+where rank= 2
+limit 1),
+
+Final_table as (
+select *
+from top_student
+union 
+select *
+from top_second_student)
+
+select * from Final_table;
