@@ -655,12 +655,6 @@ Hint: An upsell is determined by multiple days by the same user. Therefore we ha
 each transaction broken out by day and user.
 
 Answer: 
-with table as (
-select user_id, created_at, count(id) as count_of_shopping,
-rank() over(partition by user_id, created_at order by count(id) asc) as rank
+select count(user_id) as num_of_upsold_customers
 from transactions 
-group by 1,2)
-
-select user_id as num_of_upsold_customers
-from table
-where rank >1;
+having count(distinct cast(created_at as date)) > 1;
