@@ -632,3 +632,39 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
+
+4-https://www.interviewquery.com/blog-google-sql-interview-questions/ 
+Question 4-1: Given the tables below, select the top three departments with at least ten employees and rank them according to the percentage of their employees 
+making over $100,ooo in salary.
+
+employees table:
+| columns        | types   |
+| -------------- | ------- |
+| id             | int     |
+| first_name     | varchar |
+| last_name      | varchar |
+| salary         | int     |
+| department_id  | int     |
+
+departments table:
+| columns | types           |
+| ------- | --------------- |
+| id      | int             |
+| name    | varchar         |
+
+example output:
+| percentage_over_100K   | department name | number of employees |
+| ---------------------- | --------------- | ------------------- |
+| .9                     | engineering     | 25                  |
+| .5                     | marketing       | 50                  |
+| .12                    | sales           | 12                  |
+Hint: What is the question really asking? Breaking it down, we can subset this into separate clauses of conditions: 1) Top 3 departments, 2) % of employees 
+making over $100,000 in salary, and 3) Departments must have at least 10 employees.
+
+Answer: 
+select d.name as department_name , count(e.id) as number_of_employees, sum(salary)/count(e.id) as percentage_over_100K,
+from departments as d 
+inner join employees as e on e.department_id=d.id
+group by 1
+having count(e.id) >=10
+order by 3 desc; 
