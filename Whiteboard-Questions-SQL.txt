@@ -632,3 +632,32 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
+
+Question 4-2: Given a users table, write a query to get the cumulative number of new users added by day, with the total reset every month.
+
+users table:
+| columns     | type             |
+| ----------- | ---------------- |
+| id          | int              |
+| name        | varchar          |
+| created_at  | datetime         |
+
+example output:
+| Date       | Monthly Cumulative |
+| ---------- | ------------------ |
+| 2020-01-01 | 5                  |
+| 2020-01-02 | 12                 |
+| ...        | ...                |
+| 2020-02-01 | 8                  |
+| 2020-02-02 | 17                 |
+| 2020-02-03 | 23                 |
+Hint: This question first seems like it could be solved by just running a COUNT(*) and grouping by date. Or maybe it is just a regular cumulative distribution function? 
+But we have to notice that we are actually grouping by a specific interval of month and date. And when the next month comes around, 
+we want to the reset the count of the number of users.
+
+Answer: 
+select DATEPART(month, created_at) as created_month, DATEPART(day, created_at) as created_day, 
+Count(id) as total_user, 
+rank() over(Partition DATEPART(month, created_at) order by Count(id) desc) rank
+from user
+group by 1,2;
