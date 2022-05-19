@@ -632,3 +632,34 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
+
+Question 4-6: Given a table of transactions and products, write a query to return the product id, product price, 
+and average transaction price of all products with price greater than the average transaction price.
+
+transactions table:
+| column      | type     |
+| ----------- | -------- |
+| id          | integer  |
+| user_id     | integer  |
+| created_at  | datetime |
+| product_id  | integer  |
+| quantity    | integer  |
+
+products table:
+| column | type    |
+| ------ | ------- |
+| id     | integer |
+| name   | string  |
+| price  | float   |
+
+Hint: We first need to find the average price of all transactions. The total price of a transaction is price*quantity so 
+we write a sub-query to find the average over all transactions.
+
+Answer: 
+select p.id, price, 
+(Select transactions, Avg((price*quantity)) as avg_price 
+	from transactions as t 
+	left join products as p on t.product_id=p.id) avg_transaction_price
+from transactions as t 
+left join products as p on t.product_id=p.id 
+having avg_transaction_price< price; 
