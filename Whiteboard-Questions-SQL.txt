@@ -632,3 +632,39 @@ from user_dimension  as ud
 left join account_dimension as ad on ad.account_id=ud.account_id
 left join download_facts   as df on df.user_id=ud.user_id
 group by 1,2;
+
+Question 4-5: We are given two tables, a users table with demographic information and the neighborhood they live in and a neighborhoods table. 
+Write a query that returns all of the neighborhoods that have 0 users.
+
+users table:
+| columns          | type             |
+| ---------------- | ---------------- |
+| id               | int              |
+| name             | varchar          |
+| neighborhood_id  | int              |
+| created_at       | datetime         |
+
+neighborhoods table:
+| columns  | type        |
+| -------- | ----------- |
+| id       | int         |
+| name     | varchar     |
+| city_id  | int         |
+
+example output:
+| columns            | type            |
+| ------------------ | --------------- |
+| neighborhood_name  | varchar         |
+
+Hint: Our predicament is to find all the neighborhoods without users. In a sense we need all the neighborhoods that do not have a singular user living in them. 
+This means we have to introduce a concept of existence of a column in one table, but not in the other.
+
+Answer: 
+with total_user as (select n.name as neighborhood_name, count(u.id) as total_user_of_neigborhoods
+from neighborhoods as n 
+left join users as u u.neighborhood_id=n.id
+group by 1)
+
+select neighborhood_name
+from total_user
+where total_user_of_neigborhoods = 0; #Wanted to show only neighborhood_name column. Beacuse of that I used with statement. 
